@@ -3,12 +3,6 @@ import "wxt/browser";
 
 declare module "wxt/browser" {
   export type PublicPath =
-    | "/assets/Arrow.png"
-    | "/assets/Icon.svg"
-    | "/assets/Insert.png"
-    | "/assets/Regenerate.png"
-    | "/assets/tailwind.css"
-    | "/background.js"
     | "/content-scripts/content.js"
     | "/icon/128.png"
     | "/icon/16.png"

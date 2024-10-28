@@ -6,8 +6,9 @@ import Insert from "~/assets/Insert.png";
 const Modal = ({ isOpen, onClose, onGenerate }) => {
   const [inputValue, setInputValue] = useState("");
   const [chat, setChat] = useState(false);
-  const [userPrompt, setUserPrompt] = useState(""); // Store user prompt separately
+  const [userPrompt, setUserPrompt] = useState("");
   const inputRef = useRef(null);
+  const [hasResponse, setHasResponse] = useState(false);
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -25,9 +26,10 @@ const Modal = ({ isOpen, onClose, onGenerate }) => {
 
   const handleGenerate = () => {
     if (inputValue.trim()) {
-      setUserPrompt(inputValue); // Store the prompt
-      setInputValue(""); // Clear input field
+      setUserPrompt(inputValue);
+      setInputValue("");
       setChat(true);
+      setHasResponse(true); // Set when we have a response
     }
   };
 
@@ -56,11 +58,19 @@ const Modal = ({ isOpen, onClose, onGenerate }) => {
         msg.dispatchEvent(inputEvent);
       }
     }
-    // if (messageInput) {
-    //   messageInput.textContent =
-    //     "Thank you for the opportunity! If you have any more questions or if there's anything else I can help you with, feel free to ask.";
-    //   onClose();
-    // }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      if (hasResponse) {
+        // Check hasResponse instead of chat
+        handleInsert();
+      } else if (inputValue.trim()) {
+        // Only generate if there's input
+        handleGenerate();
+      }
+    }
   };
 
   return (
@@ -70,14 +80,13 @@ const Modal = ({ isOpen, onClose, onGenerate }) => {
       className="fixed inset-0 bg-black/30 flex items-center justify-center z-50"
     >
       <div
-        className="bg-white rounded-2xl p-6 w-full max-w-[43rem] 
+        className="bg-white rounded-2xl p-6 w-full md:max-w-md lg:max-w-[43rem] 
                   shadow-[0px_10px_15px_-3px_rgba(0,0,0,0.1),0px_4px_6px_-4px_rgba(0,0,0,0.1)] -translate-x-11"
         onClick={(e) => e.stopPropagation()}
         contentEditable="false"
       >
         {chat && (
           <div className="mb-4 max-h-[300px] overflow-y-auto">
-            {/* User message - now read-only */}
             <div className="flex justify-end mb-3">
               <div
                 className="bg-blue-100 text-blue-900 rounded-lg py-2 px-4 max-w-[80%] select-none pointer-events-none"
@@ -87,7 +96,6 @@ const Modal = ({ isOpen, onClose, onGenerate }) => {
               </div>
             </div>
 
-            {/* AI response - now read-only */}
             <div className="flex justify-start">
               <div
                 className="bg-gray-100 text-gray-900 rounded-lg py-2 px-4 max-w-[80%] select-none pointer-events-none"
@@ -100,20 +108,21 @@ const Modal = ({ isOpen, onClose, onGenerate }) => {
           </div>
         )}
 
-        {/* Input field for user prompt */}
         <input
           ref={inputRef}
           type="text"
           placeholder="Your prompt"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          className="w-full p-2 border rounded-lg mb-4 hover:ring-slate-300 focus:ring-slate-400 outline-none"
+          onKeyDown={handleKeyDown}
+          //   className="w-full p-2 border rounded-lg mb-4 hover:ring-slate-300 focus:ring-slate-400 focus:outline-none"
+          className="w-full p-2 mb-4 rounded-lg ring-gray-400 ring-1 focus:outline-none 
+          "
         />
 
         <div className="flex justify-end gap-2 select-none">
           {chat ? (
             <>
-              {/* Insert button - now with preventDefault */}
               <button
                 onClick={(e) => {
                   e.preventDefault();
@@ -131,7 +140,6 @@ const Modal = ({ isOpen, onClose, onGenerate }) => {
                 />
                 <span className="pointer-events-none">Insert</span>
               </button>
-              {/* Regenerate button - now with preventDefault */}
               <button
                 onClick={(e) => {
                   e.preventDefault();

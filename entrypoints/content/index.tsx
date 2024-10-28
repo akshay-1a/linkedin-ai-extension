@@ -22,7 +22,7 @@ export default defineContentScript({
         if (!container) return;
 
         const clickedElement = event.target as Node;
-
+        
         // Check if click is inside message box or container
         const isClickInsideMsg = msg.contains(clickedElement);
         const isClickInsideContainer = container.contains(clickedElement);
@@ -39,7 +39,9 @@ export default defineContentScript({
         const existingContainer = msg.querySelector('.ai-icon');
         if (!existingContainer) {
           const container = document.createElement("div");
-          container.className = "ai-icon absolute right-0 bottom-0 z-10";
+          container.className = "ai-icon absolute right-0 bottom-0 z-10 select-none";
+          container.contentEditable="false";
+          // container.
           msg.setAttribute("focused", "true");
           msg.appendChild(container);
           const root = ReactDOM.createRoot(container);

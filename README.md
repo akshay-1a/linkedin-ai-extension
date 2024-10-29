@@ -8,7 +8,7 @@ This Chrome extension enhances LinkedIn messaging by generating AI-assisted repl
 
 ## Features
 - **AI Reply Generation**: Click the AI icon in LinkedIn messages to open a prompt modal.
-- **Static Response Generation**: Easily insert pre-generated text into messages for quick replies.
+- **Quick Response Generation**: Easily insert AI-Generated text into messages for quick replies.
 
 ## Tech Stack
 - **React** + **TypeScript**: For modular, scalable development.

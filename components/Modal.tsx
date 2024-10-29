@@ -1,14 +1,23 @@
 import React, { useState, useRef, useEffect } from "react";
-import Gen from "~/assets/generate.png";
-import Regen from "~/assets/Regenerate.png";
-import Insert from "~/assets/Insert.png";
+import Gen from "~/assets/generate.svg";
+import Regen from "~/assets/regenerate.svg";
+import Insert from "~/assets/insert.svg";
+import Chat from "./Chat";
+import { BgCard, Overlay } from "./Ui/Background";
 
-const Modal = ({ isOpen, onClose, onGenerate }) => {
+type ModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const [inputValue, setInputValue] = useState("");
   const [chat, setChat] = useState(false);
   const [userPrompt, setUserPrompt] = useState("");
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [hasResponse, setHasResponse] = useState(false);
+  const dummy =
+    "Thank you for the opportunity! If you have any more questions or if there's anything else I can help you with, feel free to ask.";
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -18,8 +27,9 @@ const Modal = ({ isOpen, onClose, onGenerate }) => {
 
   if (!isOpen) return null;
 
-  const handleOverlayClick = (event) => {
-    if (event.target.id === "modal-overlay") {
+  const handleOverlayClick = (event:  React.MouseEvent) => {
+    const target = event.target as HTMLElement; // Cast to HTMLElement
+    if (target.id === "modal-overlay") {
       onClose();
     }
   };
@@ -35,12 +45,10 @@ const Modal = ({ isOpen, onClose, onGenerate }) => {
 
   const handleInsert = () => {
     const msg = document.querySelector(".msg-form__contenteditable");
-    const dummy =
-      "Thank you for the opportunity! If you have any more questions or if there's anything else I can help you with, feel free to ask.";
 
     if (msg) {
       onClose();
-      msg.focus();
+      (msg as HTMLDivElement).focus();
       const selection = window.getSelection();
       if (selection) {
         const range = selection.getRangeAt(0);
@@ -60,7 +68,7 @@ const Modal = ({ isOpen, onClose, onGenerate }) => {
     }
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       if (hasResponse) {
@@ -74,38 +82,10 @@ const Modal = ({ isOpen, onClose, onGenerate }) => {
   };
 
   return (
-    <div
-      id="modal-overlay"
-      onClick={handleOverlayClick}
-      className="fixed inset-0 bg-black/30 flex items-center justify-center z-50"
-    >
-      <div
-        className="bg-white rounded-2xl p-6 w-full md:max-w-md lg:max-w-[43rem] 
-                  shadow-[0px_10px_15px_-3px_rgba(0,0,0,0.1),0px_4px_6px_-4px_rgba(0,0,0,0.1)] -translate-x-11"
-        onClick={(e) => e.stopPropagation()}
-        contentEditable="false"
-      >
+    <Overlay onClick={handleOverlayClick}>
+      <BgCard>
         {chat && (
-          <div className="mb-4 max-h-[300px] overflow-y-auto">
-            <div className="flex justify-end mb-3">
-              <div
-                className="bg-blue-100 text-blue-900 rounded-lg py-2 px-4 max-w-[80%] select-none pointer-events-none"
-                aria-readonly="true"
-              >
-                {userPrompt}
-              </div>
-            </div>
-
-            <div className="flex justify-start">
-              <div
-                className="bg-gray-100 text-gray-900 rounded-lg py-2 px-4 max-w-[80%] select-none pointer-events-none"
-                aria-readonly="true"
-              >
-                Thank you for the opportunity! If you have any more questions or
-                if there's anything else I can help you with, feel free to ask.
-              </div>
-            </div>
-          </div>
+          <Chat userPrompt={userPrompt} dummy={dummy}/>          
         )}
 
         <input
@@ -115,7 +95,6 @@ const Modal = ({ isOpen, onClose, onGenerate }) => {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          //   className="w-full p-2 border rounded-lg mb-4 hover:ring-slate-300 focus:ring-slate-400 focus:outline-none"
           className="w-full p-2 mb-4 rounded-lg ring-gray-400 ring-1 focus:outline-none 
           "
         />
@@ -136,9 +115,9 @@ const Modal = ({ isOpen, onClose, onGenerate }) => {
                 <img
                   src={Insert}
                   alt="insert icon"
-                  className="h-5 pointer-events-none"
+                  className="h-5"
                 />
-                <span className="pointer-events-none">Insert</span>
+                <span>Insert</span>
               </button>
               <button
                 onClick={(e) => {
@@ -153,9 +132,9 @@ const Modal = ({ isOpen, onClose, onGenerate }) => {
                 <img
                   src={Regen}
                   alt="regenerate icon"
-                  className="h-6 pointer-events-none"
+                  className="h-6"
                 />
-                <span className="pointer-events-none">Regenerate</span>
+                <span>Regenerate</span>
               </button>
             </>
           ) : (
@@ -172,14 +151,14 @@ const Modal = ({ isOpen, onClose, onGenerate }) => {
               <img
                 src={Gen}
                 alt="generate icon"
-                className="h-5 pointer-events-none"
+                className="h-5"
               />
-              <span className="pointer-events-none">Generate</span>
+              <span>Generate</span>
             </button>
           )}
         </div>
-      </div>
-    </div>
+      </BgCard>
+    </Overlay>
   );
 };
 

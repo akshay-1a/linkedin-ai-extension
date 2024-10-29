@@ -1,5 +1,7 @@
 {
   "globals": {
+    "AiIcon": true,
+    "Chat": true,
     "ContentScriptContext": true,
     "InvalidMatchPattern": true,
     "MatchPattern": true,

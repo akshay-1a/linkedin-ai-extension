@@ -4,7 +4,7 @@
 This Chrome extension enhances LinkedIn messaging by generating AI-assisted replies in real-time. Built as a demo, it integrates with LinkedIn's message input to assist users with quick, customizable responses.
 
 ## Demo Video
-[![Demo Video](https://img.youtube.com/vi/9QEL7s7Tzsc/0.jpg)](https://youtu.be/9QEL7s7Tzsc)
+https://github.com/akshay-1a/linkedin-ai-extension/blob/main/Demo%20Video/extensions-linkedin-ai-reply.mp4
 
 
 ## Features
